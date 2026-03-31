@@ -24,6 +24,10 @@ public class Complex {
         double result = real * real + imag * imag;
         return Math.sqrt(result);
     }
+    public double modulusNoSquared() {
+        double result = real * real + imag * imag;
+        return result;
+    }
     public double getReal() {
         return real;
     }
