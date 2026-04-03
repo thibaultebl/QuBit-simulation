@@ -24,7 +24,7 @@ public class Complex {
         double result = real * real + imag * imag;
         return Math.sqrt(result);
     }
-    public double modulusNoSquared() {
+    public double getProb() {
         double result = real * real + imag * imag;
         return result;
     }
@@ -39,5 +39,10 @@ public class Complex {
     }
     public void setImag(double imag) {
         this.imag = imag;
+    }
+
+    @Override
+    public String toString() {
+        return getReal() + " + " + getImag() + "i";
     }
 }

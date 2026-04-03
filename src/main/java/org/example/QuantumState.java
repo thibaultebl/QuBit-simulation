@@ -3,10 +3,13 @@ package org.example;
 public class QuantumState {
     public DensityMatrix densityMatrix;
     public double qBitsCount;
+    private final double epsilon = 1e-10;
+    private Gates gates;
 
     public QuantumState(DensityMatrix densityMatrix, double qBitsCount) {
         this.densityMatrix = densityMatrix;
         this.qBitsCount = qBitsCount;
+        this.gates = new Gates();
     }
 
     // CORE GETTERS
@@ -22,7 +25,35 @@ public class QuantumState {
 
     // STATE DIAGNOSTICS
     public boolean checkPurity(DensityMatrix densityMatrix){ // measure the amount of coherence in the state
-
+        Complex[][] result = MathUtils.innerProductSameDimensions(densityMatrix.getDensityMatrix(), densityMatrix.getDensityMatrix());
+        double trace = MathUtils.getTrace(result);// system is pure if equal to 1
+        return Math.abs(trace-1)<epsilon;
     }
+    public double getTrace(DensityMatrix densityMatrix){
+        Complex[][] densMatrix = densityMatrix.getDensityMatrix();
+        return MathUtils.getTrace(densMatrix);
+    }
+
+    // MEASUREMENT RELATED METHOD
+    public double[] getProbabilities(DensityMatrix densityMatrix){
+        Complex[][] densMatrix = densityMatrix.getDensityMatrix();
+        double[] probabilities = new double[densMatrix.length];
+        for (int i = 0; i < densMatrix.length; i++) {
+            probabilities[i] = densMatrix[i][i].getReal();
+        }
+        return probabilities;
+    }
+
+    // EVOLUTION METHODS
+    public DensityMatrix applyHGate(DensityMatrix densityMatrix){
+        Complex[][] densMatrix = densityMatrix.getDensityMatrix();
+        Complex[][] gated = gates.applyHadamard(densMatrix);
+        DensityMatrix result = new DensityMatrix(gated, 2);
+        return result;
+    }
+
+
+
+
 
 }
