@@ -47,8 +47,8 @@ public class QuantumState {
     // EVOLUTION METHODS
     public DensityMatrix applyHGate(DensityMatrix densityMatrix){
         Complex[][] densMatrix = densityMatrix.getDensityMatrix();
-        Complex[][] gated = gates.applyHadamard(densMatrix);
-        DensityMatrix result = new DensityMatrix(gated, 2);
+        Complex[][] gated = gates.applyHadamard();
+        DensityMatrix result = new DensityMatrix(gated, 2); // temporary d value
         return result;
     }
 

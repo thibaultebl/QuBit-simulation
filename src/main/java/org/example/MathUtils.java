@@ -5,7 +5,6 @@ public class MathUtils {
 
     public static Complex[][] innerProductSameDimensions(Complex[][] x, Complex[][] y) {
         Complex[][] result = new Complex[x.length][x[0].length];
-
         for(int i = 0; i < result.length; i++) {
             for(int j = 0; j < result[i].length; j++) {
                 Complex sum = new Complex(0, 0);
@@ -25,15 +24,9 @@ public class MathUtils {
         }
         return sum;
     }
-    public static Complex[][] innerProductDifferentDimensions(Complex[][] x, Complex[][] y) {
-        Complex[][] result = new Complex[x.length][x[0].length];
-        for(int i = 0; i < result.length; i++) {
-            for(int j = 0; j < result[i].length; j++) {
-                Complex sum = new Complex(0, 0);
-                for(int k = 0; k < x.length; k++) {
+    public static Complex[][] kroneckerProduct(Complex[][] gate, Complex[][] identity) {
+        Complex[][] result = new Complex[identity.length][identity[0].length];
 
-                }
-            }
-        }
+
     }
 }

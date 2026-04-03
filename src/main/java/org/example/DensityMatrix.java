@@ -38,7 +38,7 @@ public class DensityMatrix {
         Complex[][] outerMatrix = new Complex[vectorState.length][vectorState.length];
         for(int i = 0; i < outerMatrix.length; i++){
             for(int j = 0; j < outerMatrix[i].length; j++){
-                    outerMatrix[i][j] = vectorState[i].doMultiplication(conjugate[j]);
+                    outerMatrix[i][j] = vectorState[i].doMultiplication(conjugate[j]); // outer product
             }
         }
         return outerMatrix;
