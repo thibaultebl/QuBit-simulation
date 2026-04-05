@@ -1,9 +1,12 @@
 package org.example;
 
+import java.util.Arrays;
+
 public class Gates {
     private Complex[][] hadamardGate;
     private Complex[][] identityGate;
     private double hadamardCoefficient;
+    private UnitaryInterface unitaryInterface;
 
     public Gates() {
         hadamardGate = new Complex[][]{
@@ -16,27 +19,27 @@ public class Gates {
                 {new Complex(0, 0), new Complex(1, 0)}
         };
 
-
-
     }
 
     public Complex[][] applyHadamard(Complex[][] input, int qBitConcerned) {
         int totalQBits = (int) (Math.log(input[0].length) / Math.log(2));
-        Complex[][] unitaryFull = computeUnitaryFull(hadamardGate, qBitConcerned, totalQBits);
-        Complex[][] unitaryFullConjugate = computeConjugate(unitaryFull);
+        Complex[][] unitaryFull = unitaryInterface.computeUnitaryFull(hadamardGate, identityGate, qBitConcerned, totalQBits);
+        Complex[][] unitaryFullConjugate = MathUtils.conjugate(unitaryFull);
+        Complex[][] unitaryFullConjugateTranspose = MathUtils.transpose(unitaryFullConjugate);
         Complex[][] preResult = MathUtils.innerProductSameDimensions(unitaryFull, input);
-        Complex[][] result = MathUtils.innerProductSameDimensions(preResult, unitaryFullConjugate);
-        return result;
+        Complex[][] result = MathUtils.innerProductSameDimensions(preResult, unitaryFullConjugateTranspose);
+        return MathUtils.scaleMatrix(result, 1/2); // hadamard coefficient
     }
-    private Complex[][] computeUnitaryFull(Complex[][] anyGate, int qBitConcerned, int totalQBit) {
-        int dimension = (int) Math.pow(2, totalQBit);
-        Complex[][] unitaryFull = new Complex[dimension][dimension];
-        for(int q = 0; q < totalQBit; q++) {
-            if(qBitConcerned == q) {
 
-            }
-        }
-
+    public Complex[][] applyCNOT(Complex[][] input, int controlQBit, int targetQBit) {
+        int totalQBits = (int) (Math.log(input[0].length) / Math.log(2));
+        Complex[][] unitaryFull = unitaryInterface.computeUnitaryFull()
     }
+
+
+
+
+
+
 
 }
