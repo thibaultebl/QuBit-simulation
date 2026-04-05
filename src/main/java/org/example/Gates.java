@@ -6,6 +6,10 @@ public class Gates {
     private Complex[][] hadamardGate;
     private Complex[][] identityGate;
     private double hadamardCoefficient;
+    private Complex[][] cNotGate;
+    private Complex[][] pauliXGate;
+    private Complex[][] pauliYGate;
+    private Complex[][] pauliZGate;
     private UnitaryInterface unitaryInterface;
 
     public Gates() {
@@ -18,6 +22,25 @@ public class Gates {
                 {new Complex(1, 0), new Complex(0, 0)},
                 {new Complex(0, 0), new Complex(1, 0)}
         };
+        cNotGate = new Complex[][]{
+                {new Complex(1, 0), new Complex(0, 0), new Complex(0, 0), new Complex(0, 0)},
+                {new Complex(0, 0), new Complex(1, 0), new Complex(0, 0), new Complex(0, 0)},
+                {new Complex(0, 0), new Complex(0, 0), new Complex(0, 0), new Complex(1, 0)},
+                {new Complex(0, 0), new Complex(0, 0), new Complex(1, 0), new Complex(0, 0)},
+        };
+        pauliXGate = new Complex[][]{
+                {new Complex(0, 0), new Complex(1, 0)},
+                {new Complex(1, 0), new Complex(0, 0)},
+        };
+        pauliYGate = new Complex[][]{
+                {new Complex(0, 0), new Complex(0, -1)},
+                {new Complex(0, 1), new Complex(0, 0)},
+        };
+        pauliZGate = new Complex[][]{
+                {new Complex(1, 0), new Complex(0, 0)},
+                {new Complex(0, 0), new Complex(-1, 0)},
+        };
+
 
     }
 
@@ -33,7 +56,39 @@ public class Gates {
 
     public Complex[][] applyCNOT(Complex[][] input, int controlQBit, int targetQBit) {
         int totalQBits = (int) (Math.log(input[0].length) / Math.log(2));
-        Complex[][] unitaryFull = unitaryInterface.computeUnitaryFull()
+        Complex[][] unitaryFull = unitaryInterface.computeUnitaryFull(cNotGate, identityGate, controlQBit, targetQBit, totalQBits);
+        Complex[][] unitaryFullConjugate = MathUtils.conjugate(unitaryFull);
+        Complex[][] unitaryFullConjugateTranspose = MathUtils.transpose(unitaryFullConjugate);
+        Complex[][] preResult = MathUtils.innerProductSameDimensions(unitaryFull, input);
+        return MathUtils.innerProductSameDimensions(preResult, unitaryFullConjugateTranspose);
+    }
+
+
+    // Pauli gate are kinda hard coded, a generic method should be done later
+    public Complex[][] applyPauliX(Complex[][] input, int qBitConcerned) {
+        int totalQBits = (int) (Math.log(input[0].length) / Math.log(2));
+        Complex[][] unitaryFull = unitaryInterface.computeUnitaryFull(pauliXGate, identityGate, qBitConcerned, totalQBits);
+        Complex[][] unitaryFullConjugate = MathUtils.conjugate(unitaryFull);
+        Complex[][] unitaryFullConjugateTranspose = MathUtils.transpose(unitaryFullConjugate);
+        Complex[][] preResult = MathUtils.innerProductSameDimensions(unitaryFull, input);
+        return MathUtils.innerProductSameDimensions(preResult, unitaryFullConjugateTranspose);
+    }
+
+    public Complex[][] applyPauliY(Complex[][] input, int qBitConcerned) {
+        int totalQBits = (int) (Math.log(input[0].length) / Math.log(2));
+        Complex[][] unitaryFull = unitaryInterface.computeUnitaryFull(pauliYGate, identityGate, qBitConcerned, totalQBits);
+        Complex[][] unitaryFullConjugate = MathUtils.conjugate(unitaryFull);
+        Complex[][] unitaryFullConjugateTranspose = MathUtils.transpose(unitaryFullConjugate);
+        Complex[][] preResult = MathUtils.innerProductSameDimensions(unitaryFull, input);
+        return MathUtils.innerProductSameDimensions(preResult, unitaryFullConjugateTranspose);
+    }
+    public Complex[][] applyPauliZ(Complex[][] input, int qBitConcerned) {
+        int totalQBits = (int) (Math.log(input[0].length) / Math.log(2));
+        Complex[][] unitaryFull = unitaryInterface.computeUnitaryFull(pauliZGate, identityGate, qBitConcerned, totalQBits);
+        Complex[][] unitaryFullConjugate = MathUtils.conjugate(unitaryFull);
+        Complex[][] unitaryFullConjugateTranspose = MathUtils.transpose(unitaryFullConjugate);
+        Complex[][] preResult = MathUtils.innerProductSameDimensions(unitaryFull, input);
+        return MathUtils.innerProductSameDimensions(preResult, unitaryFullConjugateTranspose);
     }
 
 

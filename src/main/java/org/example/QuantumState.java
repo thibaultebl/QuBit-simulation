@@ -53,7 +53,27 @@ public class QuantumState {
     }
     public DensityMatrix applyCNOT(DensityMatrix densityMatrix){
         Complex[][] densMatrix = densityMatrix.getDensityMatrix();
-        Complex[][] gated = gates.
+        Complex[][] gated = gates.applyCNOT(densMatrix, 0, 1);
+        DensityMatrix result = new DensityMatrix(gated, 2);
+        return result;
+    }
+    public DensityMatrix applyPauliX(DensityMatrix densityMatrix){
+        Complex[][] densMatrix = densityMatrix.getDensityMatrix();
+        Complex[][] gated = gates.applyPauliX(densMatrix, 0);
+        DensityMatrix result = new DensityMatrix(gated, 2);
+        return result;
+    }
+    public DensityMatrix applyPauliY(DensityMatrix densityMatrix){
+        Complex[][] densMatrix = densityMatrix.getDensityMatrix();
+        Complex[][] gated = gates.applyPauliY(densMatrix, 0);
+        DensityMatrix result = new DensityMatrix(gated, 2);
+        return result;
+    }
+    public DensityMatrix applyPauliZ(DensityMatrix densityMatrix){
+        Complex[][] densMatrix = densityMatrix.getDensityMatrix();
+        Complex[][] gated = gates.applyPauliZ(densMatrix, 0);
+        DensityMatrix result = new DensityMatrix(gated, 2);
+        return result;
     }
 
 
