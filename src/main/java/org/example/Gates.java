@@ -40,18 +40,12 @@ public class Gates {
                 {new Complex(1, 0), new Complex(0, 0)},
                 {new Complex(0, 0), new Complex(-1, 0)},
         };
-
-
     }
 
     public Complex[][] applyHadamard(Complex[][] input, int qBitConcerned) {
-        int totalQBits = (int) (Math.log(input[0].length) / Math.log(2));
-        Complex[][] unitaryFull = unitaryInterface.computeUnitaryFull(hadamardGate, identityGate, qBitConcerned, totalQBits);
-        Complex[][] unitaryFullConjugate = MathUtils.conjugate(unitaryFull);
-        Complex[][] unitaryFullConjugateTranspose = MathUtils.transpose(unitaryFullConjugate);
-        Complex[][] preResult = MathUtils.innerProductSameDimensions(unitaryFull, input);
-        Complex[][] result = MathUtils.innerProductSameDimensions(preResult, unitaryFullConjugateTranspose);
-        return MathUtils.scaleMatrix(result, 1/2); // hadamard coefficient
+        Complex[][] unitaryFull = unitaryInterface.computeUnitaryFull(hadamardGate, identityGate, qBitConcerned, (int) (Math.log(input[0].length) / Math.log(2)));
+        Complex[][] unitaryFullConjugateTranspose = MathUtils.transpose(MathUtils.conjugate(unitaryFull));
+        return MathUtils.scaleMatrix(MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(unitaryFull, input), unitaryFullConjugateTranspose), 1/2); // hadamard coefficient
     }
 
     public Complex[][] applyCNOT(Complex[][] input, int controlQBit, int targetQBit) {

@@ -62,4 +62,14 @@ public class MathUtils {
         }
         return result;
     }
+    public static Complex[][] matrixAddition(Complex[][] x, Complex[][] y) {
+        Complex[][] result = new Complex[x.length][x[0].length];
+
+        for(int i = 0; i < result.length; i++) {
+            for(int j = 0; j < result[i].length; j++) {
+                result[i][j] = x[i][j].doAddition(y[i][j]);
+            }
+        }
+        return result;
+    }
 }
