@@ -23,7 +23,7 @@ public class NoiseChannels {
                 {new Complex(0,0), new Complex(0, -1)},
                 {new Complex(0,1), new Complex(0, 0)},
         };
-
+        operator = new KrausOperator();
     }
 
     public Complex[][] doBitFlip(Complex[][] input, int QBitConcerned, double noiseValue) {

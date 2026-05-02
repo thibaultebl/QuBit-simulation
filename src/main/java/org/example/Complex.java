@@ -12,6 +12,10 @@ public class Complex {
         Complex result = new Complex(real + y.real, imag + y.imag);
         return result;
     }
+    public Complex doSubstraction(Complex y) {
+        Complex result = new Complex(real - y.real, imag - y.imag);
+        return result;
+    }
     public Complex doMultiplication(Complex y) {
         Complex result = new Complex(real*y.real - imag*y.imag, real*y.imag + imag*y.real);
         return result;
@@ -28,6 +32,7 @@ public class Complex {
         double result = real * real + imag * imag;
         return result;
     }
+
     public double getReal() {
         return real;
     }

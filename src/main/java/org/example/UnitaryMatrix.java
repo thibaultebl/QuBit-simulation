@@ -27,6 +27,10 @@ public class UnitaryMatrix implements UnitaryInterface{
     public Complex[][] computeUnitaryFull(Complex[][] anyGate, Complex[][] identityGate, int controlQBit, int targetQBit, int totalQBit) {
         Complex[][] unitaryFull;
 
+        if(controlQBit - targetQBit != 1) {
+            throw new IllegalArgumentException("both Qbit aren't adjacent");
+        }
+
         if(controlQBit == 0 || targetQBit == 0) {
             unitaryFull = anyGate;
         } else {
@@ -35,8 +39,6 @@ public class UnitaryMatrix implements UnitaryInterface{
 
         for(int q = 1; q < totalQBit; q++) {
             if(controlQBit == q) {
-                unitaryFull = MathUtils.kroneckerProduct(unitaryFull, anyGate);
-            } else if (targetQBit == q) {
                 unitaryFull = MathUtils.kroneckerProduct(unitaryFull, anyGate);
             } else {
                 unitaryFull = MathUtils.kroneckerProduct(unitaryFull, identityGate);
