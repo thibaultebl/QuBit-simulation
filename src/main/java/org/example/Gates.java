@@ -3,12 +3,13 @@ package org.example;
 import java.util.Arrays;
 
 public class Gates {
-    private Complex[][] hadamardGate;
-    private Complex[][] identityGate;
-    private Complex[][] cNotGate;
-    private Complex[][] pauliXGate;
-    private Complex[][] pauliYGate;
-    private Complex[][] pauliZGate;
+    private final Complex[][] hadamardGate;
+    private final Complex[][] identityGate;
+    private final Complex[][] cNotGate;
+    private final Complex[][] cNotGateInversed;
+    private final Complex[][] pauliXGate;
+    private final Complex[][] pauliYGate;
+    private final Complex[][] pauliZGate;
     private UnitaryInterface unitaryInterface;
 
     public Gates() {
@@ -25,6 +26,12 @@ public class Gates {
                 {new Complex(0, 0), new Complex(1, 0), new Complex(0, 0), new Complex(0, 0)},
                 {new Complex(0, 0), new Complex(0, 0), new Complex(0, 0), new Complex(1, 0)},
                 {new Complex(0, 0), new Complex(0, 0), new Complex(1, 0), new Complex(0, 0)},
+        };
+        cNotGateInversed = new Complex[][]{
+                {new Complex(1, 0), new Complex(0, 0), new Complex(0, 0), new Complex(0, 0)},
+                {new Complex(0, 0), new Complex(0, 0), new Complex(0, 0), new Complex(1, 0)},
+                {new Complex(0, 0), new Complex(0, 0), new Complex(1, 0), new Complex(0, 0)},
+                {new Complex(0, 0), new Complex(1, 0), new Complex(0, 0), new Complex(0, 0)},
         };
         pauliXGate = new Complex[][]{
                 {new Complex(0, 0), new Complex(1, 0)},
@@ -48,7 +55,14 @@ public class Gates {
 
     public Complex[][] applyCNOT(Complex[][] input, int controlQBit, int targetQBit) {
         int totalQBits = Integer.numberOfTrailingZeros(input[0].length);
-        Complex[][] unitaryFull = unitaryInterface.computeUnitaryFull(cNotGate, identityGate, controlQBit, targetQBit, totalQBits);
+        Complex[][] unitaryFull;
+
+        if(controlQBit < targetQBit) {
+            unitaryFull = unitaryInterface.computeUnitaryFull(cNotGate, identityGate, controlQBit, targetQBit, totalQBits);
+        } else {
+            unitaryFull = unitaryInterface.computeUnitaryFull(cNotGateInversed, identityGate, controlQBit, targetQBit, totalQBits);
+        }
+
         Complex[][] unitaryFullConjugate = MathUtils.conjugate(unitaryFull);
         Complex[][] unitaryFullConjugateTranspose = MathUtils.transpose(unitaryFullConjugate);
         Complex[][] preResult = MathUtils.innerProductSameDimensions(unitaryFull, input);
@@ -81,11 +95,5 @@ public class Gates {
         Complex[][] preResult = MathUtils.innerProductSameDimensions(unitaryFull, input);
         return MathUtils.innerProductSameDimensions(preResult, unitaryFullConjugateTranspose);
     }
-
-
-
-
-
-
 
 }
