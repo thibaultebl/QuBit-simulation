@@ -1,7 +1,10 @@
-package org.example;
+package org.example.Component;
+
+import org.example.Math.Complex;
+import org.example.Math.MathUtils;
 
 public class DensityMatrix {
-    private Complex[][] densityMatrix;
+    private final Complex[][] densityMatrix;
     private final double epsilon = 1e-10;
 
     public DensityMatrix(Complex[] vectorState) {
@@ -15,14 +18,14 @@ public class DensityMatrix {
         }
     }
     public DensityMatrix(Complex[][] densM) {
-        if(validateDensityMatrix(densM) || checkHermiticity(densM) || checkPSD(densM)){
+        if(validateDensityMatrix(densM) && checkHermiticity(densM) && checkPSD(densM)){
             this.densityMatrix = densM;
         }
         else {
             throw new RuntimeException("Invalid density matrix that didn't filled up the conditions");
         }
     }
-    public DensityMatrix(Complex[][] vectorState, double[] vectorProbability) {
+    public DensityMatrix(Complex[][] vectorState, double[] vectorProbability) { // this is mixed state, so a pair or chain of different state with each a probability attached to it
         if(checkProb2(vectorProbability)){
             densityMatrix = buildDensityMatrix(vectorState, vectorProbability);
             if(!validateDensityMatrix(densityMatrix) || !checkHermiticity(densityMatrix) || !checkPSD(densityMatrix)){
@@ -35,8 +38,7 @@ public class DensityMatrix {
     }
 
     private Complex[][] buildDensityMatrix(Complex[] vectorState) { //NEVER CALL FROM OUTSIDE, LET PRIVATE
-        Complex[] conjugateMatrix = conjugateVector(vectorState);
-        return outerProduct(vectorState, conjugateMatrix);
+        return outerProduct(vectorState, conjugateVector(vectorState));
     }
     private Complex[][] buildDensityMatrix(Complex[][] vectorState, double[] vectorProbability) { // building density matrix from mixed state.
         Complex[][] result = new Complex[vectorState[0].length][vectorState[0].length];
@@ -52,16 +54,11 @@ public class DensityMatrix {
     }
 
     private boolean validateDensityMatrix(Complex[][] densityMatrix) {
-        double sum = 0;
-        for(int i = 0; i < densityMatrix.length; i++) {
-            sum += densityMatrix[i][i].getReal();
-        }
-        if(Math.abs(sum-1)<epsilon) return true;
-        else return false;
+        return Math.abs(MathUtils.getTrace(densityMatrix)-1) < epsilon;
     }
+
     private boolean checkHermiticity(Complex[][] densityMatrix) {
-        Complex[][] conjTrans = MathUtils.transpose(MathUtils.conjugate(densityMatrix));
-        return checkEquality(densityMatrix, conjTrans);
+        return checkEquality(densityMatrix, MathUtils.transpose(MathUtils.conjugate(densityMatrix)));
     }
 
     private boolean checkEquality(Complex[][] densityMatrix, Complex[][] conjTransMatrix) {
@@ -81,10 +78,9 @@ public class DensityMatrix {
     }
     private boolean checkPSD(Complex[][] densityMatrix) {
         double[] eigenValues = MathUtils.getEigenvalues(densityMatrix);
-        double threshold = -epsilon;
 
         for(int i = 0; i < eigenValues.length; i++) {
-            if (eigenValues[i] < threshold) {
+            if (eigenValues[i] < -epsilon) {
                 return false;
             }
         }
@@ -110,18 +106,18 @@ public class DensityMatrix {
 
     private boolean checkProb(Complex[] vectorState) {
         double sum = 0;
-        for(int i = 0; i < vectorState.length; i++) {
-            sum += vectorState[i].getProb();
+        for (Complex complex : vectorState) {
+            sum += complex.getProb();
         }
         return Math.abs(sum-1)<epsilon;
     }
     private boolean checkProb2(double[] vectorState) {
         double sum = 0;
-        for(int i = 0; i < vectorState.length; i++) {
-            if(vectorState[i]<-epsilon){
+        for (double v : vectorState) {
+            if (v < -epsilon) {
                 return false;
             }
-            sum += vectorState[i];
+            sum += v;
         }
         return Math.abs(sum-1)<epsilon;
     }

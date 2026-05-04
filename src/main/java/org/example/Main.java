@@ -1,24 +1,23 @@
 package org.example;
 
+import org.example.Component.DensityMatrix;
+import org.example.Interface.QuantumState;
+import org.example.Math.Complex;
+
 public class Main {
 
     public static void main(String[] args) {
-        Complex[][] A = {
-                { new Complex(1, 0), new Complex(2, 0) },
-                { new Complex(3, 0), new Complex(4, 0) }
-        };
 
-        Complex[][] B = {
-                { new Complex(1, 0), new Complex(0, 0) },
-                { new Complex(0, 0), new Complex(1, 0) }  // Identity matrix
-        };
+        Factory factory = new Factory();
+        Complex[] system = factory.setGroundState(20);
 
-        Complex[][] result = MathUtils.innerProductSameDimensions(A, B);
-
-// A * I should equal A
-        for (int i = 0; i < result.length; i++)
-            for (int j = 0; j < result[0].length; j++)
-                System.out.println("result[" + i + "][" + j + "] = " + result[i][j].toString());
+        DensityMatrix densityMatrix = new DensityMatrix(system);
+        QuantumState GlobalState = new QuantumState(densityMatrix, Integer.numberOfTrailingZeros(densityMatrix.getDensityMatrix()[0].length));
+        GlobalState.checkPurity();
+        GlobalState.applyHGate(2);
+        GlobalState.applyHGate(7);
+        GlobalState.applyHGate(4);
+        GlobalState.checkPurity();
 
     }
 }

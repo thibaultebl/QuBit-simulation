@@ -1,4 +1,7 @@
-package org.example;
+package org.example.Noise;
+
+import org.example.Math.Complex;
+import org.example.Math.MathUtils;
 
 public class KrausOperator {
 

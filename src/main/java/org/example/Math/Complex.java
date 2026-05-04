@@ -1,4 +1,4 @@
-package org.example;
+package org.example.Math;
 
 public class Complex {
     private double real;

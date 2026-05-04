@@ -1,6 +1,9 @@
-package org.example;
+package org.example.Gates;
 
-public class UnitaryMatrix implements UnitaryInterface{
+import org.example.Math.Complex;
+import org.example.Math.MathUtils;
+
+public class UnitaryMatrix implements UnitaryInterface {
 
     @Override
     public Complex[][] computeUnitaryFull(Complex[][] anyGate, Complex[][] identityGate , int qBitConcerned, int totalQBit) {
@@ -40,7 +43,7 @@ public class UnitaryMatrix implements UnitaryInterface{
         }
 
         for(int q = p; q < totalQBit; q++) {
-            if(controlQBit == q) {
+            if(controlQBit == q || targetQBit == q) {
                 unitaryFull = MathUtils.kroneckerProduct(unitaryFull, cNot);
                 q++;
             } else {

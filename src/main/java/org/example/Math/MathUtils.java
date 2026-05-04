@@ -1,9 +1,8 @@
-package org.example;
+package org.example.Math;
 import org.ojalgo.array.Array1D;
 import org.ojalgo.matrix.decomposition.Eigenvalue;
 import org.ojalgo.matrix.store.GenericStore;
 import org.ojalgo.matrix.store.MatrixStore;
-import org.ojalgo.matrix.store.R064Store;
 import org.ojalgo.scalar.ComplexNumber;
 
 
@@ -58,7 +57,7 @@ public class MathUtils {
 
         for(int i = 0; i < result.length; i++) {
             for(int j = 0; j < result[i].length; j++) {
-                result[j][i] = x[i][j];
+                result[i][j] = x[j][i];
             }
         }
         return result;

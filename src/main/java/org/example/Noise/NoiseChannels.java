@@ -1,11 +1,14 @@
-package org.example;
+package org.example.Noise;
+
+import org.example.Math.Complex;
+import org.example.Math.MathUtils;
 
 public class NoiseChannels {
-    private Complex[][] identityMatrix;
-    private Complex[][] xMatrix;
-    private Complex[][] zMatrix;
-    private Complex[][] yMatrix;
-    private KrausOperator operator;
+    private final Complex[][] identityMatrix;
+    private final Complex[][] xMatrix;
+    private final Complex[][] zMatrix;
+    private final Complex[][] yMatrix;
+    private final KrausOperator operator;
     public NoiseChannels() {
         identityMatrix = new Complex[][]{
                 {new Complex(1,0), new Complex(0, 0)},
@@ -83,15 +86,10 @@ public class NoiseChannels {
         Complex[][] K3Full =
                 operator.computeKrausMatrix(k3Depolarizing(noiseValue), identityMatrix, QBitConcerned, (int) (Math.log(input[0].length) / Math.log(2)));
 
-        Complex[][] K0FullConjugateTranspose = MathUtils.transpose(MathUtils.conjugate(K0Full));
-        Complex[][] K1FullConjugateTranspose = MathUtils.transpose(MathUtils.conjugate(K1Full));
-        Complex[][] K2FullConjugateTranspose = MathUtils.transpose(MathUtils.conjugate(K2Full));
-        Complex[][] K3FullConjugateTranspose = MathUtils.transpose(MathUtils.conjugate(K3Full));
-
-        Complex[][] firstTerm = MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(K0Full, input), K0FullConjugateTranspose);
-        Complex[][] secondTerm = MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(K1Full, input), K1FullConjugateTranspose);
-        Complex[][] thirdTerm = MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(K2Full, input), K2FullConjugateTranspose);
-        Complex[][] fourthTerm = MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(K3Full, input), K3FullConjugateTranspose);
+        Complex[][] firstTerm = MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(K0Full, input), MathUtils.transpose(MathUtils.conjugate(K0Full)) );
+        Complex[][] secondTerm = MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(K1Full, input), MathUtils.transpose(MathUtils.conjugate(K1Full)));
+        Complex[][] thirdTerm = MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(K2Full, input), MathUtils.transpose(MathUtils.conjugate(K2Full)));
+        Complex[][] fourthTerm = MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(K3Full, input), MathUtils.transpose(MathUtils.conjugate(K3Full)));
 
         return MathUtils.matrixAddition(MathUtils.matrixAddition(firstTerm, secondTerm), MathUtils.matrixAddition(thirdTerm, fourthTerm));
     }
@@ -100,11 +98,9 @@ public class NoiseChannels {
         Complex[][] K0Full = operator.computeKrausMatrix(operator.getK04Damping(dampingFactor), identityMatrix, QBitConcerned, (int) (Math.log(input[0].length) / Math.log(2)));
         Complex[][] K1Full = operator.computeKrausMatrix(operator.getK14Damping(dampingFactor), identityMatrix, QBitConcerned, (int) (Math.log(input[0].length) / Math.log(2)));
 
-        Complex[][] K0FullConjugateTranspose = MathUtils.transpose(MathUtils.conjugate(K0Full));
-        Complex[][] K1FullConjugateTranspose = MathUtils.transpose(MathUtils.conjugate(K1Full));
 
-        Complex[][] firstTerm = MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(K0Full, input), K0FullConjugateTranspose);
-        Complex[][] secondTerm = MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(K1Full, input), K1FullConjugateTranspose);
+        Complex[][] firstTerm = MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(K0Full, input), MathUtils.transpose(MathUtils.conjugate(K0Full)));
+        Complex[][] secondTerm = MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(K1Full, input), MathUtils.transpose(MathUtils.conjugate(K1Full)));
 
         return MathUtils.matrixAddition(firstTerm, secondTerm);
     }
