@@ -32,10 +32,10 @@ public class NoiseChannels {
     public Complex[][] doBitFlip(Complex[][] input, int QBitConcerned, double noiseValue) {
 
         Complex[][] K0Full =
-                operator.computeKrausMatrix(k0(noiseValue), identityMatrix, QBitConcerned, (int) (Math.log(input[0].length) / Math.log(2)));
+                operator.computeKrausMatrix(k0(noiseValue), identityMatrix, QBitConcerned, (Integer.numberOfTrailingZeros(input[0].length)));
 
         Complex[][] K1Full =
-                operator.computeKrausMatrix(k1BitFlip(noiseValue), identityMatrix, QBitConcerned, (int) (Math.log(input[0].length) / Math.log(2)));
+                operator.computeKrausMatrix(k1BitFlip(noiseValue), identityMatrix, QBitConcerned, Integer.numberOfTrailingZeros(input[0].length));
 
         Complex[][] firstTerm =
                 MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(K0Full, input ), MathUtils.transpose(MathUtils.conjugate(K0Full)));
@@ -59,10 +59,10 @@ public class NoiseChannels {
 
     public Complex[][] doPhaseFlip(Complex[][] input, int QBitConcerned, double noiseValue) {
         Complex[][] K0Full =
-                operator.computeKrausMatrix(k0(noiseValue), identityMatrix, QBitConcerned, (int) (Math.log(input[0].length) / Math.log(2)));
+                operator.computeKrausMatrix(k0(noiseValue), identityMatrix, QBitConcerned, Integer.numberOfTrailingZeros(input[0].length));
 
         Complex[][] K1Full =
-                operator.computeKrausMatrix(k1PhaseFlip(noiseValue), identityMatrix, QBitConcerned, (int) (Math.log(input[0].length) / Math.log(2)));
+                operator.computeKrausMatrix(k1PhaseFlip(noiseValue), identityMatrix, QBitConcerned, Integer.numberOfTrailingZeros(input[0].length));
 
         Complex[][] firstTerm =
                 MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(K0Full, input ), MathUtils.transpose(MathUtils.conjugate(K0Full)));
@@ -75,16 +75,16 @@ public class NoiseChannels {
 
     public Complex[][] doDepolarizingChannel(Complex[][] input, int QBitConcerned, double noiseValue) {
         Complex[][] K0Full =
-                operator.computeKrausMatrix(k0Depolarizing(noiseValue), identityMatrix, QBitConcerned, (int) (Math.log(input[0].length) / Math.log(2)));
+                operator.computeKrausMatrix(k0Depolarizing(noiseValue), identityMatrix, QBitConcerned, Integer.numberOfTrailingZeros(input[0].length));
 
         Complex[][] K1Full =
-                operator.computeKrausMatrix(k1Depolarizing(noiseValue), identityMatrix, QBitConcerned, (int) (Math.log(input[0].length) / Math.log(2)));
+                operator.computeKrausMatrix(k1Depolarizing(noiseValue), identityMatrix, QBitConcerned, Integer.numberOfTrailingZeros(input[0].length));
 
         Complex[][] K2Full =
-                operator.computeKrausMatrix(k2Depolarizing(noiseValue), identityMatrix, QBitConcerned, (int) (Math.log(input[0].length) / Math.log(2)));
+                operator.computeKrausMatrix(k2Depolarizing(noiseValue), identityMatrix, QBitConcerned, Integer.numberOfTrailingZeros(input[0].length));
 
         Complex[][] K3Full =
-                operator.computeKrausMatrix(k3Depolarizing(noiseValue), identityMatrix, QBitConcerned, (int) (Math.log(input[0].length) / Math.log(2)));
+                operator.computeKrausMatrix(k3Depolarizing(noiseValue), identityMatrix, QBitConcerned, Integer.numberOfTrailingZeros(input[0].length));
 
         Complex[][] firstTerm = MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(K0Full, input), MathUtils.transpose(MathUtils.conjugate(K0Full)) );
         Complex[][] secondTerm = MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(K1Full, input), MathUtils.transpose(MathUtils.conjugate(K1Full)));
@@ -95,8 +95,8 @@ public class NoiseChannels {
     }
 
     public Complex[][] doAmplitudeDamping(Complex[][] input, int QBitConcerned, double dampingFactor) {
-        Complex[][] K0Full = operator.computeKrausMatrix(operator.getK04Damping(dampingFactor), identityMatrix, QBitConcerned, (int) (Math.log(input[0].length) / Math.log(2)));
-        Complex[][] K1Full = operator.computeKrausMatrix(operator.getK14Damping(dampingFactor), identityMatrix, QBitConcerned, (int) (Math.log(input[0].length) / Math.log(2)));
+        Complex[][] K0Full = operator.computeKrausMatrix(operator.getK04Damping(dampingFactor), identityMatrix, QBitConcerned, Integer.numberOfTrailingZeros(input[0].length));
+        Complex[][] K1Full = operator.computeKrausMatrix(operator.getK14Damping(dampingFactor), identityMatrix, QBitConcerned, Integer.numberOfTrailingZeros(input[0].length));
 
 
         Complex[][] firstTerm = MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(K0Full, input), MathUtils.transpose(MathUtils.conjugate(K0Full)));

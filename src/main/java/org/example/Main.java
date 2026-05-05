@@ -13,11 +13,11 @@ public class Main {
 
         DensityMatrix densityMatrix = new DensityMatrix(system);
         QuantumState GlobalState = new QuantumState(densityMatrix, Integer.numberOfTrailingZeros(densityMatrix.getDensityMatrix()[0].length));
-        GlobalState.checkPurity();
+        GlobalState.getPurity();
         GlobalState.applyHGate(2);
         GlobalState.applyHGate(7);
         GlobalState.applyHGate(4);
-        GlobalState.checkPurity();
+        GlobalState.getPurity();
 
     }
 }

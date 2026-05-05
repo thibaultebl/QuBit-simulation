@@ -50,7 +50,7 @@ public class Gates {
     }
 
     public Complex[][] applyHadamard(Complex[][] input, int qBitConcerned) {
-        Complex[][] unitaryFull = unitaryInterface.computeUnitaryFull(hadamardGate, identityGate, qBitConcerned, (int) (Math.log(input[0].length) / Math.log(2)));
+        Complex[][] unitaryFull = unitaryInterface.computeUnitaryFull(hadamardGate, identityGate, qBitConcerned, (Integer.numberOfTrailingZeros(input[0].length)));
         return MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(unitaryFull, input), MathUtils.transpose(MathUtils.conjugate(unitaryFull))); // hadamard coefficient
     }
 
