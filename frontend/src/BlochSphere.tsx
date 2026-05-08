@@ -78,7 +78,7 @@ function BlochArrow({
   const HEAD_WIDTH = 0.04;
   const SHAFT_RADIUS = 0.013;
   const arrowColor = useMemo(
-    () => new THREE.Color(accent).lerp(new THREE.Color("#ffffff"), 0.25),
+    () => new THREE.Color(accent).lerp(new THREE.Color("#ffffff"), 0.08),
     [accent],
   );
 

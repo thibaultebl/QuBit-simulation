@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { BlochSphere } from "./BlochSphere";
+import { PurityGraph } from "./PurityGraph";
 import { reset, step, type NoiseChannel, type Snapshot } from "./api";
 
 const TRAIL_LEN = 22;
 const TICK_MS = 80;
+const PURITY_HISTORY = 400;
 
 interface Props {
   id: "A" | "B";
@@ -24,6 +26,7 @@ const NOISE_STEP = 0.001;
 export function SimPanel({ id, accent, label }: Props) {
   const [snap, setSnap] = useState<Snapshot>({ x: 0, y: 0, z: 0, purity: 1, entropy: 0, fidelity: 1, step: 0 });
   const [trail, setTrail] = useState<Array<{ x: number; y: number; z: number }>>([]);
+  const [purityHist, setPurityHist] = useState<number[]>([]);
   const [noise, setNoise] = useState(0);
   const [channel, setChannel] = useState<NoiseChannel>("depolarizing");
   const [error, setError] = useState<string | null>(null);
@@ -43,6 +46,11 @@ export function SimPanel({ id, accent, label }: Props) {
         setTrail((prev) => {
           const next = [...prev, { x: s.x, y: s.y, z: s.z }];
           if (next.length > TRAIL_LEN) next.splice(0, next.length - TRAIL_LEN);
+          return next;
+        });
+        setPurityHist((prev) => {
+          const next = [...prev, s.purity];
+          if (next.length > PURITY_HISTORY) next.splice(0, next.length - PURITY_HISTORY);
           return next;
         });
         setError(null);
@@ -82,38 +90,48 @@ export function SimPanel({ id, accent, label }: Props) {
         <Row k="fidelity" v={snap.fidelity} />
       </div>
 
-      <div className="panel__ctrls">
-        <div className="ctrl">
-          <label>noise = {noise.toFixed(3)} <span className="muted">(0 .. {NOISE_MAX})</span></label>
-          <input
-            type="range"
-            min={0}
-            max={NOISE_MAX}
-            step={NOISE_STEP}
-            value={noise}
-            onChange={(e) => setNoise(parseFloat(e.target.value))}
-          />
+      <div className="panel__bottom">
+        <div className="panel__ctrls">
+          <div className="ctrl">
+            <label>noise = {noise.toFixed(3)} <span className="muted">(0 .. {NOISE_MAX})</span></label>
+            <input
+              type="range"
+              min={0}
+              max={NOISE_MAX}
+              step={NOISE_STEP}
+              value={noise}
+              onChange={(e) => setNoise(parseFloat(e.target.value))}
+            />
+          </div>
+
+          <fieldset className="ctrl">
+            <legend>channel</legend>
+            {CHANNELS.map((c) => (
+              <label key={c.id} className="opt">
+                <input
+                  type="radio"
+                  name={`ch-${id}`}
+                  checked={channel === c.id}
+                  onChange={() => setChannel(c.id)}
+                />
+                <span>{c.label}</span>
+              </label>
+            ))}
+          </fieldset>
+
+          <button
+            className="ctrl__reset"
+            onClick={() => {
+              setTrail([]);
+              setPurityHist([]);
+              reset(id);
+            }}
+          >[ reset ]</button>
         </div>
 
-        <fieldset className="ctrl">
-          <legend>channel</legend>
-          {CHANNELS.map((c) => (
-            <label key={c.id} className="opt">
-              <input
-                type="radio"
-                name={`ch-${id}`}
-                checked={channel === c.id}
-                onChange={() => setChannel(c.id)}
-              />
-              <span>{c.label}</span>
-            </label>
-          ))}
-        </fieldset>
-
-        <button
-          className="ctrl__reset"
-          onClick={() => { setTrail([]); reset(id); }}
-        >[ reset ]</button>
+        <div className="panel__graph">
+          <PurityGraph data={purityHist} accent={accent} capacity={PURITY_HISTORY} />
+        </div>
       </div>
     </section>
   );
