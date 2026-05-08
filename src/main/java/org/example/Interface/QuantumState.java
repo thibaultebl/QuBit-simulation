@@ -78,6 +78,15 @@ public class QuantumState {
     public void applyPauliZ(int QBitConcerned){
         this.densityMatrix = new DensityMatrix(gates.applyPauliZ(densityMatrix.getDensityMatrix(), QBitConcerned));
     }
+    public void applyRx(int QBitConcerned, double theta){
+        this.densityMatrix = new DensityMatrix(gates.applyRx(densityMatrix.getDensityMatrix(), QBitConcerned, theta));
+    }
+    public void applyRy(int QBitConcerned, double theta){
+        this.densityMatrix = new DensityMatrix(gates.applyRy(densityMatrix.getDensityMatrix(), QBitConcerned, theta));
+    }
+    public void applyRz(int QBitConcerned, double theta){
+        this.densityMatrix = new DensityMatrix(gates.applyRz(densityMatrix.getDensityMatrix(), QBitConcerned, theta));
+    }
 
     // NOISE CHANNELS / DECOHERENCE
     public void bitFlip(int QBitConcerned, double noiseValue){

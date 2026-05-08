@@ -86,4 +86,40 @@ public class Gates {
         return MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(unitaryFull, input), MathUtils.transpose(MathUtils.conjugate(unitaryFull)));
     }
 
+    public Complex[][] applyRx(Complex[][] input, int qBitConcerned, double theta) {
+        double c = Math.cos(theta / 2.0);
+        double s = Math.sin(theta / 2.0);
+        Complex[][] rx = new Complex[][]{
+                {new Complex(c, 0), new Complex(0, -s)},
+                {new Complex(0, -s), new Complex(c, 0)},
+        };
+        int totalQBits = Integer.numberOfTrailingZeros(input[0].length);
+        Complex[][] U = unitaryInterface.computeUnitaryFull(rx, identityGate, qBitConcerned, totalQBits);
+        return MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(U, input), MathUtils.transpose(MathUtils.conjugate(U)));
+    }
+
+    public Complex[][] applyRy(Complex[][] input, int qBitConcerned, double theta) {
+        double c = Math.cos(theta / 2.0);
+        double s = Math.sin(theta / 2.0);
+        Complex[][] ry = new Complex[][]{
+                {new Complex(c, 0), new Complex(-s, 0)},
+                {new Complex(s, 0), new Complex(c, 0)},
+        };
+        int totalQBits = Integer.numberOfTrailingZeros(input[0].length);
+        Complex[][] U = unitaryInterface.computeUnitaryFull(ry, identityGate, qBitConcerned, totalQBits);
+        return MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(U, input), MathUtils.transpose(MathUtils.conjugate(U)));
+    }
+
+    public Complex[][] applyRz(Complex[][] input, int qBitConcerned, double theta) {
+        double c = Math.cos(theta / 2.0);
+        double s = Math.sin(theta / 2.0);
+        Complex[][] rz = new Complex[][]{
+                {new Complex(c, -s), new Complex(0, 0)},
+                {new Complex(0, 0), new Complex(c, s)},
+        };
+        int totalQBits = Integer.numberOfTrailingZeros(input[0].length);
+        Complex[][] U = unitaryInterface.computeUnitaryFull(rz, identityGate, qBitConcerned, totalQBits);
+        return MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(U, input), MathUtils.transpose(MathUtils.conjugate(U)));
+    }
+
 }

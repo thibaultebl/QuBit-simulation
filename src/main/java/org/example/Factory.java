@@ -14,4 +14,14 @@ public class Factory {
         }
         return groundState;
     }
+
+    public Complex[] setGHZState(int numQBit){
+        int dim = (int) Math.pow(2, numQBit);
+        Complex[] ghz = new Complex[dim];
+        double amp = 1.0 / Math.sqrt(2);
+        for(int i = 0; i < dim; i++) ghz[i] = new Complex(0, 0);
+        ghz[0] = new Complex(amp, 0);
+        ghz[dim - 1] = new Complex(amp, 0);
+        return ghz;
+    }
 }
