@@ -11,6 +11,7 @@ public class Gates {
     private final Complex[][] pauliXGate;
     private final Complex[][] pauliYGate;
     private final Complex[][] pauliZGate;
+    private final Complex[][] swapGate;
     private final UnitaryInterface unitaryInterface;
 
     public Gates() {
@@ -46,6 +47,12 @@ public class Gates {
                 {new Complex(1, 0), new Complex(0, 0)},
                 {new Complex(0, 0), new Complex(-1, 0)},
         };
+        swapGate = new Complex[][]{
+                {new Complex(1, 0), new Complex(0, 0), new Complex(0, 0), new Complex(0, 0)},
+                {new Complex(0, 0), new Complex(0, 0), new Complex(1, 0), new Complex(0, 0)},
+                {new Complex(0, 0), new Complex(1, 0), new Complex(0, 0), new Complex(0, 0)},
+                {new Complex(0, 0), new Complex(0, 0), new Complex(0, 0), new Complex(1, 0)},
+        };
         unitaryInterface = new UnitaryMatrix();
     }
 
@@ -56,14 +63,51 @@ public class Gates {
 
     public Complex[][] applyCNOT(Complex[][] input, int controlQBit, int targetQBit) {
         int totalQBits = Integer.numberOfTrailingZeros(input[0].length);
-        Complex[][] unitaryFull;
+        int distance = Math.abs(controlQBit - targetQBit);
+        Complex[][] output = input;
 
-        if(controlQBit < targetQBit) {
-            unitaryFull = unitaryInterface.computeUnitaryFull(cNotGate, identityGate, controlQBit, targetQBit, totalQBits);
+        if (distance > 1) {
+            int current = controlQBit;
+            int direction = controlQBit < targetQBit ? 1 : -1;
+
+            for (int i = 0; i < distance - 1; i++) {
+                int next = current + direction;
+                output = applySwap(output, Math.min(current, next), Math.max(current, next));
+                current = next;
+            }
+
+            Complex[][] unitaryFull;
+            if (current < targetQBit) {
+                unitaryFull = unitaryInterface.computeUnitaryFull(cNotGate, identityGate, current, targetQBit, totalQBits);
+            } else {
+                unitaryFull = unitaryInterface.computeUnitaryFull(cNotGateInversed, identityGate, current, targetQBit, totalQBits);
+            }
+            Complex[][] unitaryFullConjugate = MathUtils.conjugate(unitaryFull);
+            output = MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(unitaryFull, output), MathUtils.transpose(unitaryFullConjugate));
+
+            for (int i = 0; i < distance - 1; i++) {
+                current = current - direction;
+                int next = current + direction;
+                output = applySwap(output, Math.min(current, next), Math.max(current, next));
+            }
+
         } else {
-            unitaryFull = unitaryInterface.computeUnitaryFull(cNotGateInversed, identityGate, controlQBit, targetQBit, totalQBits);
+            Complex[][] unitaryFull;
+            if (controlQBit < targetQBit) {
+                unitaryFull = unitaryInterface.computeUnitaryFull(cNotGate, identityGate, controlQBit, targetQBit, totalQBits);
+            } else {
+                unitaryFull = unitaryInterface.computeUnitaryFull(cNotGateInversed, identityGate, controlQBit, targetQBit, totalQBits);
+            }
+            Complex[][] unitaryFullConjugate = MathUtils.conjugate(unitaryFull);
+            output = MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(unitaryFull, output), MathUtils.transpose(unitaryFullConjugate));
         }
 
+        return output;
+    }
+
+    private Complex[][] applySwap(Complex[][] input, int a, int b) {
+        int totalQBits = Integer.numberOfTrailingZeros(input[0].length);
+        Complex[][] unitaryFull = unitaryInterface.computeUnitaryFull(swapGate, identityGate, a, b, totalQBits);
         Complex[][] unitaryFullConjugate = MathUtils.conjugate(unitaryFull);
         return MathUtils.innerProductSameDimensions(MathUtils.innerProductSameDimensions(unitaryFull, input), MathUtils.transpose(unitaryFullConjugate));
     }
