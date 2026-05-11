@@ -5,6 +5,8 @@ import org.example.Math.Complex;
 import java.io.FileWriter;
 import java.io.IOException;
 
+// RQ.2 : Does the threshold shift with circuit depth — and is the relationship linear or exponential?
+
 public class ExperimentCircuitDepth {
 
     public static void main(String[] args) throws IOException {
@@ -28,7 +30,6 @@ public class ExperimentCircuitDepth {
         Factory factory = new Factory();
         Complex[] system = factory.setGroundState(numQubits);
 
-        // Build ideal state: apply gate layers without noise
         DensityMatrix initialDensity = new DensityMatrix(system);
         QuantumState idealQuantumState = new QuantumState(initialDensity, numQubits);
 
@@ -41,21 +42,15 @@ public class ExperimentCircuitDepth {
 
         DensityMatrix idealState = idealQuantumState.getDensityMatrix();
 
-        // Noise sweep
         for (double noise = 0.0; noise <= 1.0; noise += 0.01) {
-
-            // Build noisy state: apply gate layers with noise after each layer
             DensityMatrix noisyInitial = new DensityMatrix(system);
             QuantumState noisyState = new QuantumState(noisyInitial, numQubits);
 
             for (int d = 0; d < depth; d++) {
-                // Gate round
                 noisyState.applyHGate(0);
                 for (int q = 0; q < numQubits - 1; q++) {
                     noisyState.applyCNOT(q, q + 1);
                 }
-
-                // Noise on all qubits after this layer
                 for (int q = 0; q < numQubits; q++) {
                     noisyState.depolarizingChannel(q, noise);
                 }

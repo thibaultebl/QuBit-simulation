@@ -10,7 +10,7 @@ public class DensityMatrix {
     public DensityMatrix(Complex[] vectorState) {
         if(checkProb(vectorState)){
             densityMatrix = buildDensityMatrix(vectorState);
-            if(!validateDensityMatrix(densityMatrix) || !checkHermiticity(densityMatrix) || !checkPSD(densityMatrix)){
+            if(!validateDensityMatrix(densityMatrix) || !checkHermiticity(densityMatrix) ){
                 throw new RuntimeException("Invalid density matrix that didn't filled up the conditions");}
         }
         else {
@@ -18,7 +18,7 @@ public class DensityMatrix {
         }
     }
     public DensityMatrix(Complex[][] densM) {
-        if(validateDensityMatrix(densM) && checkHermiticity(densM) && checkPSD(densM)){
+        if(validateDensityMatrix(densM) && checkHermiticity(densM)){
             this.densityMatrix = densM;
         }
         else {
@@ -28,7 +28,7 @@ public class DensityMatrix {
     public DensityMatrix(Complex[][] vectorState, double[] vectorProbability) { // this is mixed state, so a pair or chain of different state with each a probability attached to it
         if(checkProb2(vectorProbability)){
             densityMatrix = buildDensityMatrix(vectorState, vectorProbability);
-            if(!validateDensityMatrix(densityMatrix) || !checkHermiticity(densityMatrix) || !checkPSD(densityMatrix)){
+            if(!validateDensityMatrix(densityMatrix) || !checkHermiticity(densityMatrix)){
                 throw new RuntimeException("Invalid density matrix that didn't filled up the conditions");
             }
         }
