@@ -35,13 +35,12 @@ public class ExperimentFidelitySigmoid {
         DensityMatrix densityMatrix = new DensityMatrix(system);
         QuantumState idealQuantumState = new QuantumState(densityMatrix, numQubits);
 
-        // Prepare the initial state
         if (stateType.equals("GHZ")) {
             idealQuantumState.applyHGate(0);
             for (int q = 0; q < numQubits - 1; q++) {
                 idealQuantumState.applyCNOT(q, q + 1);
             }
-        } else { // Product state
+        } else {
             for (int q = 0; q < numQubits; q++) {
                 idealQuantumState.applyHGate(q);
             }
@@ -49,11 +48,9 @@ public class ExperimentFidelitySigmoid {
 
         DensityMatrix idealState = idealQuantumState.getDensityMatrix();
 
-        // Noise sweep
         for (double noise = 0.0; noise <= 1.0; noise += 0.01) {
             QuantumState noisyState = new QuantumState(idealState, numQubits);
 
-            // Apply noise to all qubits
             for (int q = 0; q < numQubits; q++) {
                 switch (noiseType) {
                     case "depolarizing":
