@@ -11,17 +11,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
 
-/**
- * Tiny REST bridge between the Java quantum simulation and a TypeScript / Electron
- * front-end. Uses only the JDK-bundled com.sun.net.httpserver, no extra deps.
- *
- * Endpoints (all return JSON, all permissive CORS for local dev):
- *   POST /sim/{id}/reset          -> {ok:true}
- *   POST /sim/{id}/step           body: {"noise":0.0,"channel":"depolarizing"}
- *                                 -> {x,y,z,purity,entropy,step}
- *   GET  /sim/{id}/snapshot       -> {x,y,z,purity,entropy,step}
- *   GET  /health                  -> {ok:true}
- */
 public class BlochServer {
 
     private static final int PORT = 8765;
@@ -110,7 +99,6 @@ public class BlochServer {
         }
     }
 
-    // Tiny string-based JSON field extractors – the body is always a flat object from us.
     private static double parseDouble(String body, String key, double def) {
         String token = "\"" + key + "\"";
         int k = body.indexOf(token);

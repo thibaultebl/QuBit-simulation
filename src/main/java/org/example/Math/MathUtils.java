@@ -92,7 +92,7 @@ public class MathUtils {
         }
         return result;
     }
-    public static double fidelity(Complex[][] x, Complex[][] y) { // x for rho and y for sigma
+    public static double fidelity(Complex[][] x, Complex[][] y) {
         Complex[][] sqrtRho = getSquaredMatrix(x);
 
         Complex[][] temp = innerProductSameDimensions(sqrtRho, y);
@@ -130,22 +130,19 @@ public class MathUtils {
                 ));
             }
         }
-        // eigen decomposition, the boolean indicate it is a hermitian matrix
         Eigenvalue<ComplexNumber> eigen = Eigenvalue.C128.make(store, true);
         eigen.decompose(store);
 
         Array1D<ComplexNumber> eigenvalues = eigen.getEigenvalues();
         MatrixStore<ComplexNumber> V = eigen.getV();
 
-        // we build the vector of sqrt value of eigen values
         double[] sqrtLambda = new double[x.length];
 
         for(int i = 0; i < x.length; i++) {
-            double val = eigenvalues.get(i).getReal(); // the eigen values of a hermitian matrix are always real
-            sqrtLambda[i] = Math.sqrt(Math.max(val, 0.0)); // density matrices are positive (semi-definite), eigen values should be greater or equal than 0, but floating point can be slightly negative, we handle it here.
+            double val = eigenvalues.get(i).getReal();
+            sqrtLambda[i] = Math.sqrt(Math.max(val, 0.0));
         }
 
-        // We reconstruct sqrt rho = V . sqrt V . V^T
 
         Complex[][] result = new Complex[x.length][x[0].length];
         for(int i = 0; i < result.length; i++) {
