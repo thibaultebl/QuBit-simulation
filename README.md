@@ -54,4 +54,6 @@ Every run writes one CSV per `(n, condition)` with columns:
 | `purity`          | $\mathrm{Tr}(\rho^2)$            |
 | `entropy_derivative` | finite-difference $dS/dp$ (RQ4 only) |
 
+## Interface
 
+![description](gui.png)
